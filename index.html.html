@@ -1,0 +1,396 @@
+<html><head><base href="https://websim.com/futuristic-roulette-analyzer/">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Analisador de Roleta Futurista</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+  * {
+    box-sizing: border-box;
+    font-family: 'Orbitron', sans-serif;
+  }
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #0a0a0a;
+    color: #e0e0e0;
+  }
+  .app-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #1a1a1a;
+    min-height: 100vh;
+    box-shadow: 0 0 20px rgba(0,255,255,0.2);
+  }
+  .app-header {
+    background-color: #00bcd4;
+    color: #0a0a0a;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow: 0 2px 10px rgba(0,255,255,0.3);
+  }
+  .app-content {
+    padding: 24px;
+  }
+  .input-group {
+    margin-bottom: 24px;
+  }
+  input[type="text"], input[type="number"] {
+    width: 100%;
+    padding: 16px;
+    border: 2px solid #00bcd4;
+    background-color: #2a2a2a;
+    color: #e0e0e0;
+    border-radius: 8px;
+    font-size: 18px;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+  input[type="text"]:focus, input[type="number"]:focus {
+    box-shadow: 0 0 10px rgba(0,255,255,0.5);
+  }
+  button {
+    width: 100%;
+    padding: 16px;
+    background-color: #00bcd4;
+    color: #0a0a0a;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+  }
+  button:hover {
+    background-color: #00e5ff;
+    box-shadow: 0 0 15px rgba(0,255,255,0.7);
+  }
+  .sequence-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+    margin-bottom: 24px;
+    padding: 16px;
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    box-shadow: inset 0 0 10px rgba(0,255,255,0.2);
+  }
+  .number {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    font-weight: bold;
+    color: #0a0a0a;
+    font-size: 16px;
+    text-shadow: 0 0 5px rgba(255,255,255,0.5);
+    transition: all 0.3s ease;
+  }
+  .red { background-color: #ff1744; }
+  .black { background-color: #212121; color: #e0e0e0; }
+  .green { background-color: #00e676; }
+  .highlight { 
+    box-shadow: 0 0 15px #00e5ff, 0 0 30px #00e5ff;
+    transform: scale(1.1);
+  }
+  .result-section {
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    padding: 24px;
+    margin-top: 24px;
+    box-shadow: 0 0 15px rgba(0,255,255,0.2);
+  }
+  .result-section h3 {
+    margin-top: 0;
+    color: #00bcd4;
+    font-size: 20px;
+    letter-spacing: 1px;
+  }
+  .result-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 16px;
+  }
+  .tab-container {
+    display: flex;
+    margin-bottom: 24px;
+  }
+  .tab {
+    flex: 1;
+    text-align: center;
+    padding: 16px;
+    background-color: #2a2a2a;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 2px solid transparent;
+  }
+  .tab.active {
+    background-color: #00bcd4;
+    color: #0a0a0a;
+    border-bottom: 2px solid #00e5ff;
+  }
+  .tab-content {
+    display: none;
+  }
+  .tab-content.active {
+    display: block;
+  }
+  .occurrence-box {
+    background-color: #2a2a2a;
+    border: 2px solid #00bcd4;
+    border-radius: 8px;
+    padding: 24px;
+    margin-top: 24px;
+    box-shadow: 0 0 15px rgba(0,255,255,0.2);
+  }
+  .occurrence-box h4 {
+    margin-top: 0;
+    color: #00bcd4;
+    font-size: 18px;
+    letter-spacing: 1px;
+  }
+  .first-occurrence-box h4 {
+    margin-top: 0;
+    color: #00bcd4;
+    font-size: 18px;
+    letter-spacing: 1px;
+  }
+  .glow-text {
+    text-shadow: 0 0 5px #00e5ff, 0 0 10px #00e5ff;
+  }
+</style>
+</head>
+<body>
+<div class="app-container">
+  <div class="app-header">Analisador de Roleta Futurista</div>
+  <div class="app-content">
+    <div class="tab-container">
+      <div class="tab active" onclick="switchTab('analyze')">Analisar</div>
+      <div class="tab" onclick="switchTab('track')">Rastrear</div>
+    </div>
+
+    <div id="analyze-tab" class="tab-content active">
+      <div class="input-group">
+        <input type="text" id="sequenceInput" placeholder="Sequência (2-500 números, 0-36)">
+      </div>
+      <button onclick="analyzeSequence()">Analisar Sequência</button>
+      <div id="sequenceDisplay" class="sequence-display"></div>
+      <div id="result"></div>
+    </div>
+
+    <div id="track-tab" class="tab-content">
+      <div class="input-group">
+        <input type="number" id="trackerInput" min="0" max="36" placeholder="Número para rastrear (0-36)">
+      </div>
+      <button onclick="trackNumber()">Rastrear Número</button>
+      <div id="trackerResult"></div>
+      <div id="firstOccurrenceBox" class="occurrence-box"></div>
+      <div id="numberBeforeBox" class="occurrence-box"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const redNumbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
+let currentSequence = [];
+
+function switchTab(tabName) {
+  document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+  document.querySelector(`.tab:nth-child(${tabName === 'analyze' ? '1' : '2'}`).classList.add('active');
+  document.getElementById(`${tabName}-tab`).classList.add('active');
+}
+
+function analyzeSequence() {
+  const input = document.getElementById('sequenceInput').value;
+  currentSequence = input.split(/[,\s]+/).map(Number);
+  
+  if (currentSequence.length < 2 || currentSequence.length > 500) {
+    alert('Por favor, insira entre 2 e 500 números.');
+    return;
+  }
+  
+  if (currentSequence.some(n => n < 0 || n > 36 || !Number.isInteger(n))) {
+    alert('Todos os números devem ser inteiros entre 0 e 36.');
+    return;
+  }
+  
+  displaySequence(currentSequence);
+  analyzeAndDisplayResults(currentSequence);
+}
+
+function analyzeAndDisplayResults(sequence) {
+  let result = '';
+  const total = sequence.length;
+  
+  const counts = sequence.reduce((acc, num) => {
+    acc[num] = (acc[num] || 0) + 1;
+    return acc;
+  }, {});
+  
+  result += '<h4>Contagem de números:</h4>';
+  for (let i = 0; i <= 36; i++) {
+    if (counts[i]) {
+      result += `<div class="result-item"><span>Número ${i}:</span> <span class="glow-text">${counts[i]}</span></div>`;
+    }
+  }
+  
+  const sortedCounts = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  result += '<h4>Números mais frequentes:</h4>';
+  for (let i = 0; i < Math.min(5, sortedCounts.length); i++) {
+    result += `<div class="result-item"><span>Número ${sortedCounts[i][0]}:</span> <span class="glow-text">${sortedCounts[i][1]} vezes</span></div>`;
+  }
+  
+  const redCount = sequence.filter(num => redNumbers.includes(num)).length;
+  const blackCount = sequence.filter(num => !redNumbers.includes(num) && num !== 0).length;
+  const greenCount = sequence.filter(num => num === 0).length;
+  
+  result += '<h4>Distribuição de cores:</h4>';
+  result += `<div class="result-item"><span>Vermelho:</span> <span class="glow-text">${redCount}</span></div>`;
+  result += `<div class="result-item"><span>Preto:</span> <span class="glow-text">${blackCount}</span></div>`;
+  result += `<div class="result-item"><span>Verde (0):</span> <span class="glow-text">${greenCount}</span></div>`;
+  
+  displayResult(result, total);
+}
+
+function displaySequence(numbers) {
+  const sequenceDisplay = document.getElementById('sequenceDisplay');
+  sequenceDisplay.innerHTML = '';
+  numbers.forEach(num => {
+    const numberElement = document.createElement('div');
+    numberElement.className = `number ${getNumberColor(num)}`;
+    numberElement.textContent = num;
+    sequenceDisplay.appendChild(numberElement);
+  });
+}
+
+function getNumberColor(num) {
+  if (num === 0) return 'green';
+  return redNumbers.includes(num) ? 'red' : 'black';
+}
+
+function displayResult(result, total) {
+  const resultDiv = document.getElementById('result');
+  resultDiv.innerHTML = `
+    <div class="result-section">
+      <h3 class="glow-text">Resultados da Análise</h3>
+      ${result}
+      <p>Total de números analisados: <span class="glow-text">${total}</span></p>
+    </div>
+  `;
+}
+
+function trackNumber() {
+  const trackerInput = document.getElementById('trackerInput');
+  const numberToTrack = parseInt(trackerInput.value);
+
+  if (isNaN(numberToTrack) || numberToTrack < 0 || numberToTrack > 36) {
+    alert('Por favor, insira um número válido entre 0 e 36.');
+    return;
+  }
+
+  if (currentSequence.length === 0) {
+    alert('Por favor, primeiro insira e analise uma sequência de números.');
+    return;
+  }
+
+  const occurrences = [];
+  for (let i = 0; i < currentSequence.length; i++) {
+    if (currentSequence[i] === numberToTrack) {
+      occurrences.push(i);
+    }
+  }
+
+  let html = `
+    <div class="result-section">
+      <h3 class="glow-text">Rastreamento do número ${numberToTrack}</h3>
+  `;
+  if (occurrences.length === 0) {
+    html += `<p>O número ${numberToTrack} não apareceu na sequência.</p>`;
+  } else {
+    html += `<p>O número ${numberToTrack} apareceu <span class="glow-text">${occurrences.length}</span> vezes na sequência.</p>`;
+    occurrences.forEach((index, occIndex) => {
+      html += `<div class="result-item"><span>Ocorrência ${occIndex + 1}:</span> `;
+      if (index === 0) {
+        html += `<strong class="glow-text">Primeira posição da sequência</strong>`;
+      } else {
+        const numbersBefore = currentSequence.slice(index + 1);
+        html += `<strong>Antes: <span class="glow-text">${numbersBefore.join(', ')}</span></strong>`;
+      }
+      html += `</div>`;
+    });
+  }
+  html += '</div>';
+
+  document.getElementById('trackerResult').innerHTML = html;
+  highlightTrackedNumber(numberToTrack);
+
+  displayFirstOccurrences(occurrences, numberToTrack);
+  displayNumbersBefore(occurrences, numberToTrack);
+}
+
+function displayFirstOccurrences(occurrences, numberToTrack) {
+  let html = `
+    <h4 class="glow-text">Primeiro resultado depois de cada ocorrência do ${numberToTrack}</h4>
+  `;
+
+  if (occurrences.length === 0) {
+    html += `<p>Nenhuma ocorrência encontrada.</p>`;
+  } else {
+    occurrences.forEach((index, occIndex) => {
+      if (index === currentSequence.length - 1) {
+        html += `<div class="result-item"><span>Ocorrência ${occIndex + 1}:</span> <strong class="glow-text">Última posição da sequência</strong></div>`;
+      } else {
+        const nextNumber = currentSequence[index + 1];
+        html += `<div class="result-item"><span>Ocorrência ${occIndex + 1}:</span> <strong class="glow-text">${nextNumber}</strong></div>`;
+      }
+    });
+  }
+
+  document.getElementById('firstOccurrenceBox').innerHTML = html;
+}
+
+function displayNumbersBefore(occurrences, numberToTrack) {
+  let html = `
+    <h4 class="glow-text">Números antes de cada ocorrência do ${numberToTrack}</h4>
+  `;
+
+  if (occurrences.length === 0) {
+    html += `<p>Nenhuma ocorrência encontrada.</p>`;
+  } else {
+    occurrences.forEach((index, occIndex) => {
+      if (index === 0) {
+        html += `<div class="result-item"><span>Ocorrência ${occIndex + 1}:</span> <strong class="glow-text">Primeira posição da sequência</strong></div>`;
+      } else {
+        const numberBefore = currentSequence[index - 1];
+        html += `<div class="result-item"><span>Ocorrência ${occIndex + 1}:</span> <strong class="glow-text">${numberBefore}</strong></div>`;
+      }
+    });
+  }
+
+  document.getElementById('numberBeforeBox').innerHTML = html;
+}
+
+function highlightTrackedNumber(numberToTrack) {
+  const numberElements = document.querySelectorAll('.number');
+  numberElements.forEach((element, index) => {
+    if (parseInt(element.textContent) === numberToTrack) {
+      element.classList.add('highlight');
+    } else {
+      element.classList.remove('highlight');
+    }
+  });
+}
+</script>
+</body>
+</html>
